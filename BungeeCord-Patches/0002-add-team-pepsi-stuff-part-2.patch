@@ -1,0 +1,702 @@
+From 30ac25509f926e68c6287085e20c3f570841e2cc Mon Sep 17 00:00:00 2001
+From: DaMatrix <joey.rabil@gmail.com>
+Date: Thu, 4 Apr 2019 21:29:33 +0200
+Subject: [PATCH] add team pepsi stuff part 2
+
+
+diff --git a/module/bepis/pom.xml b/module/bepis/pom.xml
+new file mode 100644
+index 00000000..995671a5
+--- /dev/null
++++ b/module/bepis/pom.xml
+@@ -0,0 +1,20 @@
++
++<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++    <modelVersion>4.0.0</modelVersion>
++
++    <parent>
++        <groupId>io.github.waterfallmc</groupId>
++        <artifactId>waterfall-module</artifactId>
++        <version>1.13-SNAPSHOT</version>
++        <relativePath>../pom.xml</relativePath>
++    </parent>
++
++    <groupId>team.pepsi.mc</groupId>
++    <artifactId>waterfallhackery</artifactId>
++    <version>1.13-SNAPSHOT</version>
++    <packaging>jar</packaging>
++
++    <name>bepis</name>
++    <description>jeff</description>
++</project>
+diff --git a/module/bepis/src/main/java/team/pepsi/bungeeplugin/PepsiHackery.java b/module/bepis/src/main/java/team/pepsi/bungeeplugin/PepsiHackery.java
+new file mode 100644
+index 00000000..b08713fd
+--- /dev/null
++++ b/module/bepis/src/main/java/team/pepsi/bungeeplugin/PepsiHackery.java
+@@ -0,0 +1,40 @@
++/*
++ * Decompiled with CFR 0.139.
++ *
++ * Could not load the following classes:
++ *  net.md_5.bungee.api.ProxyServer
++ *  net.md_5.bungee.api.plugin.Command
++ *  net.md_5.bungee.api.plugin.Listener
++ *  net.md_5.bungee.api.plugin.Plugin
++ *  net.md_5.bungee.api.plugin.PluginManager
++ */
++package team.pepsi.bungeeplugin;
++
++import net.md_5.bungee.api.plugin.Plugin;
++import team.pepsi.bungeeplugin.command.BlistCommand;
++import team.pepsi.bungeeplugin.command.message.MsgCommand;
++import team.pepsi.bungeeplugin.command.message.ReplyCommand;
++import team.pepsi.bungeeplugin.util.PlayerAddonData;
++
++import java.util.Hashtable;
++import java.util.Map;
++
++public class PepsiHackery extends Plugin {
++    public static PepsiHackery INSTANCE;
++    public static final Map<String, PlayerAddonData> ADDON_DATA = new Hashtable<>();
++
++    public void onEnable() {
++        INSTANCE = this;
++        this.onReload();
++    }
++
++    public void onReload() {
++        this.getProxy().getPluginManager().unregisterListeners(this);
++        this.getProxy().getPluginManager().unregisterListeners(this);
++
++        this.getProxy().getPluginManager().registerCommand(this, new MsgCommand());
++        this.getProxy().getPluginManager().registerCommand(this, new ReplyCommand());
++        this.getProxy().getPluginManager().registerCommand(this, new BlistCommand());
++        this.getProxy().getPluginManager().registerListener(this, new PepsiListener());
++    }
++}
+diff --git a/module/bepis/src/main/java/team/pepsi/bungeeplugin/PepsiListener.java b/module/bepis/src/main/java/team/pepsi/bungeeplugin/PepsiListener.java
+new file mode 100644
+index 00000000..abaccb9f
+--- /dev/null
++++ b/module/bepis/src/main/java/team/pepsi/bungeeplugin/PepsiListener.java
+@@ -0,0 +1,124 @@
++/*
++ * Decompiled with CFR 0.139.
++ *
++ * Could not load the following classes:
++ *  net.md_5.bungee.api.ProxyServer
++ *  net.md_5.bungee.api.chat.BaseComponent
++ *  net.md_5.bungee.api.chat.TextComponent
++ *  net.md_5.bungee.api.config.ServerInfo
++ *  net.md_5.bungee.api.connection.Connection
++ *  net.md_5.bungee.api.connection.ProxiedPlayer
++ *  net.md_5.bungee.api.connection.Server
++ *  net.md_5.bungee.api.event.ChatEvent
++ *  net.md_5.bungee.api.event.PlayerDisconnectEvent
++ *  net.md_5.bungee.api.event.PostLoginEvent
++ *  net.md_5.bungee.api.event.ServerConnectEvent
++ *  net.md_5.bungee.api.event.ServerConnectedEvent
++ *  net.md_5.bungee.api.event.ServerKickEvent
++ *  net.md_5.bungee.api.plugin.Listener
++ *  net.md_5.bungee.event.EventHandler
++ */
++package team.pepsi.bungeeplugin;
++
++import net.md_5.bungee.api.ProxyServer;
++import net.md_5.bungee.api.chat.BaseComponent;
++import net.md_5.bungee.api.chat.TextComponent;
++import net.md_5.bungee.api.connection.ProxiedPlayer;
++import net.md_5.bungee.api.event.ChatEvent;
++import net.md_5.bungee.api.event.PlayerDisconnectEvent;
++import net.md_5.bungee.api.event.PostLoginEvent;
++import net.md_5.bungee.api.event.ServerConnectEvent;
++import net.md_5.bungee.api.event.ServerConnectedEvent;
++import net.md_5.bungee.api.event.ServerKickEvent;
++import net.md_5.bungee.api.plugin.Listener;
++import net.md_5.bungee.event.EventHandler;
++import team.pepsi.bungeeplugin.util.Data;
++import team.pepsi.bungeeplugin.util.PlayerAddonData;
++import team.pepsi.bungeeplugin.util.PlayerGroupInfo;
++
++import java.util.Map;
++
++public class PepsiListener implements Listener {
++    public static final BaseComponent[] HEADER = TextComponent.fromLegacyText("    §fWelcome to the official §9Team §cPepsi §fMinecraft server!    \n§aMade by §9§lDaPorkchop_§r\n\n§fCheck out the website! §9§n§ohttp://pepsi.team§r\nJoin the §9§lDiscord §rserver: §9§n§ohttps://discord.gg/h2MNn35");
++    public static final BaseComponent[] FOOTER = TextComponent.fromLegacyText("");
++
++    @EventHandler
++    public void onChat(ChatEvent event) {
++        if (!event.isCommand()) {
++            event.setCancelled(true);
++            ProxiedPlayer player = (ProxiedPlayer) event.getSender();
++            String name = player.getName();
++            PlayerAddonData data = PepsiHackery.ADDON_DATA.get(name);
++            long delay = data.lastMessageSent;
++            if (delay + 2000L > System.currentTimeMillis()) {
++                if (data.isWarned) {
++                    player.disconnect("SPAM");
++                    return;
++                }
++                data.isWarned = true;
++                player.sendMessage("Don't spam!");
++            } else {
++                data.isWarned = false;
++            }
++            data.lastMessageSent = System.currentTimeMillis();
++            String message = "<§3" + player.getServer().getInfo().getName() + " §8- §r" + player.getDisplayName() + name + "§r> ";
++            if (event.getMessage().startsWith(">")) {
++                message = message + "§a";
++            }
++            message = message + event.getMessage();
++            ProxyServer.getInstance().broadcast(message);
++        }
++    }
++
++    @EventHandler
++    public void onJoin(PostLoginEvent event) {
++        ProxiedPlayer player = event.getPlayer();
++        PepsiHackery.ADDON_DATA.put(player.getName(), new PlayerAddonData());
++        player.setTabHeader(HEADER, FOOTER);
++        PlayerGroupInfo groupInfo = Data.UUID_TO_GROUP_INFO.get(player.getUniqueId().toString());
++        if (groupInfo == null) {
++            player.setDisplayName("");
++        } else {
++            player.setDisplayName(String.format("§%s", groupInfo.prefix));
++        }
++        player.sendMessage("§cWelcome to the §9Team Pepsi §cMinecraft server!");
++        player.sendMessage("§aRules:");
++        player.sendMessage("§a  idk just do whatever ok");
++        player.sendMessage("");
++        player.sendMessage("§9Website: §o§nhttp://pepsi.team");
++        player.sendMessage("§9Discord: §o§nhttps://discord.gg/jVEPCTT");
++    }
++
++    @EventHandler
++    public void onLeave(PlayerDisconnectEvent event) {
++        String name = event.getPlayer().getName();
++        PepsiHackery.ADDON_DATA.remove(name);
++        for (Map.Entry<String, PlayerAddonData> entry : PepsiHackery.ADDON_DATA.entrySet()) {
++            if (!name.equals(entry.getValue().lastDM)) continue;
++            entry.getValue().lastDM = null;
++        }
++    }
++
++    @EventHandler
++    public void onSwitch(ServerConnectedEvent event) {
++        event.getPlayer().setTabHeader(HEADER, TextComponent.fromLegacyText("§cCurrently connected to§f: §9§o" + event.getServer().getInfo().getName()));
++    }
++
++    @EventHandler
++    public void onConnect(ServerConnectEvent event) {
++    }
++
++    @EventHandler
++    public void onKick(ServerKickEvent event) {
++        if (event.getKickedFrom().getName().equals("lobby")) {
++            event.setKickReason("Lobby has gone offline!");
++        } else {
++            event.setCancelled(true);
++            event.setCancelServer(ProxyServer.getInstance().getServerInfo("lobby"));
++            event.getPlayer().sendMessage("§cYou have been disconnected from: §9" + event.getKickedFrom().getName());
++            event.getPlayer().sendMessage("§cReason:");
++            event.getPlayer().sendMessage(event.getKickReasonComponent());
++        }
++    }
++}
++
+diff --git a/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/BlistCommand.java b/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/BlistCommand.java
+new file mode 100644
+index 00000000..1630dd0e
+--- /dev/null
++++ b/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/BlistCommand.java
+@@ -0,0 +1,34 @@
++/*
++ * Decompiled with CFR 0.139.
++ *
++ * Could not load the following classes:
++ *  net.md_5.bungee.api.CommandSender
++ *  net.md_5.bungee.api.ProxyServer
++ *  net.md_5.bungee.api.config.ServerInfo
++ *  net.md_5.bungee.api.connection.ProxiedPlayer
++ *  net.md_5.bungee.api.connection.Server
++ *  net.md_5.bungee.api.plugin.Command
++ */
++package team.pepsi.bungeeplugin.command;
++
++import lombok.NonNull;
++import net.md_5.bungee.api.CommandSender;
++import net.md_5.bungee.api.ProxyServer;
++import net.md_5.bungee.api.connection.ProxiedPlayer;
++import net.md_5.bungee.api.plugin.Command;
++
++public class BlistCommand
++        extends Command {
++    public BlistCommand() {
++        super("blist");
++    }
++
++    public void execute(CommandSender commandSender, String[] strings) {
++        if (commandSender.getName().equals("DaPorkchop_") || !(commandSender instanceof ProxiedPlayer)) {
++            ProxyServer.getInstance().getPlayers().forEach(player -> commandSender.sendMessage(player.getDisplayName() + player.getName() + "§r - §3" + player.getServer().getInfo().getName() + "§r Forge: " + (player.isForgeUser() ? "§atrue" : "§cfalse")));
++        } else {
++            commandSender.sendMessage("§cREEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
++        }
++    }
++}
++
+diff --git a/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/ServerChangeCommand.java b/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/ServerChangeCommand.java
+new file mode 100644
+index 00000000..fb0eaebd
+--- /dev/null
++++ b/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/ServerChangeCommand.java
+@@ -0,0 +1,43 @@
++package team.pepsi.bungeeplugin.command;
++
++import lombok.NonNull;
++import net.md_5.bungee.api.ChatColor;
++import net.md_5.bungee.api.CommandSender;
++import net.md_5.bungee.api.ProxyServer;
++import net.md_5.bungee.api.chat.ComponentBuilder;
++import net.md_5.bungee.api.connection.ProxiedPlayer;
++import net.md_5.bungee.api.plugin.Command;
++import team.pepsi.bungeeplugin.util.SubserverInfo;
++
++/**
++ * @author DaPorkchop_
++ */
++public class ServerChangeCommand extends Command {
++    protected final SubserverInfo info;
++
++    public ServerChangeCommand(@NonNull SubserverInfo info) {
++        super(info.id, null, info.aliases.toArray(new String[0]));
++
++        this.info = info;
++    }
++
++    @Override
++    public void execute(CommandSender sender, String[] args) {
++        if (sender instanceof ProxiedPlayer) {
++            if (((ProxiedPlayer) sender).getServer().getInfo().getName().equals(this.info.id)) {
++                sender.sendMessage(String.format("§cAlready connected to §l%s§r§c!", this.info.displayname));
++                return;
++            }
++            sender.sendMessage(String.format("§9Transferring to §l%s§r§9...", this.info.id));
++            ((ProxiedPlayer) sender).connect(ProxyServer.getInstance().getServerInfo(this.info.id), (success, e) -> {
++                if (success.booleanValue()) {
++                    sender.sendMessage(String.format("§aSuccessfully transferred to §l%s§r§a!", this.info.id));
++                } else {
++                    sender.sendMessage(String.format("§cError whilst transferring to §l%s§r§c!", this.info.id));
++                }
++            });
++        } else {
++            sender.sendMessage(new ComponentBuilder("Not a player!").bold(true).color(ChatColor.RED).create());
++        }
++    }
++}
+diff --git a/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/message/MsgCommand.java b/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/message/MsgCommand.java
+new file mode 100644
+index 00000000..7c79a467
+--- /dev/null
++++ b/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/message/MsgCommand.java
+@@ -0,0 +1,53 @@
++/*
++ * Decompiled with CFR 0.139.
++ *
++ * Could not load the following classes:
++ *  net.md_5.bungee.api.ChatColor
++ *  net.md_5.bungee.api.CommandSender
++ *  net.md_5.bungee.api.ProxyServer
++ *  net.md_5.bungee.api.chat.BaseComponent
++ *  net.md_5.bungee.api.chat.ComponentBuilder
++ *  net.md_5.bungee.api.connection.ProxiedPlayer
++ *  net.md_5.bungee.api.plugin.Command
++ */
++package team.pepsi.bungeeplugin.command.message;
++
++import net.md_5.bungee.api.ChatColor;
++import net.md_5.bungee.api.CommandSender;
++import net.md_5.bungee.api.ProxyServer;
++import net.md_5.bungee.api.chat.ComponentBuilder;
++import net.md_5.bungee.api.connection.ProxiedPlayer;
++import net.md_5.bungee.api.plugin.Command;
++import team.pepsi.bungeeplugin.PepsiHackery;
++
++public class MsgCommand extends Command {
++    public MsgCommand() {
++        super("msg", null, "w", "whisper", "message", "tell");
++    }
++
++    public void execute(CommandSender commandSender, String[] strings) {
++        if (commandSender instanceof ProxiedPlayer) {
++            ProxiedPlayer player = (ProxiedPlayer) commandSender;
++            if (strings.length < 2) {
++                commandSender.sendMessage("§cUsage: §o/msg <player> <message>");
++                return;
++            }
++            ProxiedPlayer to = ProxyServer.getInstance().getPlayer(strings[0]);
++            if (to == null) {
++                commandSender.sendMessage("§cCould not find player: §o" + strings[0] + "§r§c!");
++                return;
++            }
++            String message = "";
++            for (int i = 1; i < strings.length; ++i) {
++                message = message + strings[i] + " ";
++            }
++            to.sendMessage("§7[§d" + player.getName() + " §7-> §dme§7] §d" + message);
++            player.sendMessage("§7[§dme §7-> §d" + to.getName() + "§7] §d" + message);
++            PepsiHackery.ADDON_DATA.get(to.getName()).lastDM = player.getName();
++            PepsiHackery.ADDON_DATA.get(player.getName()).lastDM = to.getName();
++        } else {
++            commandSender.sendMessage(new ComponentBuilder("Not a player!").bold(true).color(ChatColor.RED).create());
++        }
++    }
++}
++
+diff --git a/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/message/ReplyCommand.java b/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/message/ReplyCommand.java
+new file mode 100644
+index 00000000..fc12023f
+--- /dev/null
++++ b/module/bepis/src/main/java/team/pepsi/bungeeplugin/command/message/ReplyCommand.java
+@@ -0,0 +1,58 @@
++/*
++ * Decompiled with CFR 0.139.
++ *
++ * Could not load the following classes:
++ *  net.md_5.bungee.api.ChatColor
++ *  net.md_5.bungee.api.CommandSender
++ *  net.md_5.bungee.api.ProxyServer
++ *  net.md_5.bungee.api.chat.BaseComponent
++ *  net.md_5.bungee.api.chat.ComponentBuilder
++ *  net.md_5.bungee.api.connection.ProxiedPlayer
++ *  net.md_5.bungee.api.plugin.Command
++ */
++package team.pepsi.bungeeplugin.command.message;
++
++import net.md_5.bungee.api.ChatColor;
++import net.md_5.bungee.api.CommandSender;
++import net.md_5.bungee.api.ProxyServer;
++import net.md_5.bungee.api.chat.ComponentBuilder;
++import net.md_5.bungee.api.connection.ProxiedPlayer;
++import net.md_5.bungee.api.plugin.Command;
++import team.pepsi.bungeeplugin.PepsiHackery;
++import team.pepsi.bungeeplugin.util.PlayerAddonData;
++
++import java.util.StringJoiner;
++
++public class ReplyCommand extends Command {
++    public ReplyCommand() {
++        super("reply", null, "r");
++    }
++
++    public void execute(CommandSender commandSender, String[] strings) {
++        if (commandSender instanceof ProxiedPlayer) {
++            ProxiedPlayer player = (ProxiedPlayer) commandSender;
++            if (strings.length < 1) {
++                commandSender.sendMessage("§cUsage: §o/r <message>");
++                return;
++            }
++            PlayerAddonData senderData = PepsiHackery.ADDON_DATA.get(player.getName());
++            if (senderData.lastDM == null) {
++                commandSender.sendMessage("§cNo DM active!");
++                return;
++            }
++            ProxiedPlayer to = ProxyServer.getInstance().getPlayer(senderData.lastDM);
++            StringJoiner joiner = new StringJoiner(" ");
++            for (String s : strings)     {
++                joiner.add(s);
++            }
++            String message = joiner.toString();
++            to.sendMessage("§7[§d" + player.getName() + " §7-> §dme§7] §d" + message);
++            player.sendMessage("§7[§dme §7-> §d" + to.getName() + "§7] §d" + message);
++            PepsiHackery.ADDON_DATA.get(to.getName()).lastDM = player.getName();
++            senderData.lastDM = to.getName();
++        } else {
++            commandSender.sendMessage(new ComponentBuilder("Not a player!").bold(true).color(ChatColor.RED).create());
++        }
++    }
++}
++
+diff --git a/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/Data.java b/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/Data.java
+new file mode 100644
+index 00000000..251b993e
+--- /dev/null
++++ b/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/Data.java
+@@ -0,0 +1,88 @@
++/*
++ * Decompiled with CFR 0.139.
++ */
++package team.pepsi.bungeeplugin.util;
++
++import com.google.gson.JsonArray;
++import com.google.gson.JsonElement;
++import com.google.gson.JsonObject;
++import com.google.gson.JsonParser;
++import lombok.NonNull;
++
++import java.io.IOException;
++import java.io.InputStream;
++import java.net.URL;
++import java.net.URLConnection;
++import java.util.ArrayList;
++import java.util.Collections;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.stream.Collectors;
++import java.util.stream.StreamSupport;
++
++public class Data {
++    public static Map<String, SubserverInfo> SUBSERVER_INFO = Collections.emptyMap();
++    public static List<PlayerGroupInfo> GROUP_INFO = Collections.emptyList();
++    public static Map<String, PlayerGroupInfo> UUID_TO_GROUP_INFO = Collections.emptyMap();
++
++    public static void load() {
++        try {
++            {
++                JsonObject object = httpGetAndParseJson("https://gist.githubusercontent.com/DaMatrix/8b7ff92fcc7e49c0f511a8ed207d8e92/raw/teampepsi-server-list.json");
++                Map<String, SubserverInfo> subserverInfo = new HashMap<>();
++                object.entrySet().forEach(entry -> {
++                    SubserverInfo info = new SubserverInfo();
++                    info.id = entry.getKey();
++                    info.displayname = entry.getValue().getAsJsonObject().get("displayname").getAsString();
++                    info.aliases = StreamSupport.stream(entry.getValue().getAsJsonObject().get("aliases").getAsJsonArray().spliterator(), false).map(JsonElement::getAsString).collect(Collectors.toSet());
++                    info.isPublic = entry.getValue().getAsJsonObject().get("public").getAsBoolean();
++                    subserverInfo.put(info.id, info);
++                });
++                SUBSERVER_INFO = subserverInfo;
++            }
++            {
++                JsonArray array = httpGetAndParseJson("https://gist.githubusercontent.com/DaMatrix/8b7ff92fcc7e49c0f511a8ed207d8e92/raw/teampepsi-server-players.json");
++                List<PlayerGroupInfo> groupInfo = new ArrayList<>();
++                array.forEach(element -> {
++                    PlayerGroupInfo info = new PlayerGroupInfo();
++                    info.name = element.getAsJsonObject().get("name").getAsString();
++                    info.prefix = element.getAsJsonObject().get("prefix").getAsString();
++                    info.memberUuids = StreamSupport.stream(element.getAsJsonObject().get("members").getAsJsonArray().spliterator(), false).map(JsonElement::getAsString).collect(Collectors.toSet());
++                    groupInfo.add(info);
++                });
++                GROUP_INFO = groupInfo;
++            }
++            {
++                Map<String, PlayerGroupInfo> uuidToGroupInfo = new HashMap<>();
++                GROUP_INFO.forEach(group -> group.memberUuids.forEach(uuid -> uuidToGroupInfo.put(uuid, group)));
++                UUID_TO_GROUP_INFO = uuidToGroupInfo;
++            }
++        } catch (IOException e) {
++            throw new IllegalStateException("Unable to load data!", e);
++        }
++    }
++
++    @SuppressWarnings("unchecked")
++    protected static <E extends JsonElement> E httpGetAndParseJson(@NonNull String url) throws IOException    {
++        return (E) new JsonParser().parse(httpGet(url));
++    }
++
++    protected static String httpGet(@NonNull String url) throws IOException {
++        StringBuilder sb = new StringBuilder();
++        URLConnection urlConn;
++        URL realUrl = new URL(url);
++        urlConn = realUrl.openConnection();
++        if (urlConn != null)
++            urlConn.setReadTimeout(60 * 1000);
++        if (urlConn != null && urlConn.getInputStream() != null) {
++            try (InputStream in = urlConn.getInputStream()) {
++                int cp;
++                while ((cp = in.read()) != -1) {
++                    sb.append((char) cp);
++                }
++            }
++        }
++        return sb.toString();
++    }
++}
+diff --git a/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/PlayerAddonData.java b/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/PlayerAddonData.java
+new file mode 100644
+index 00000000..2da386b2
+--- /dev/null
++++ b/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/PlayerAddonData.java
+@@ -0,0 +1,11 @@
++/*
++ * Decompiled with CFR 0.139.
++ */
++package team.pepsi.bungeeplugin.util;
++
++public class PlayerAddonData {
++    public long lastMessageSent = 0L;
++    public boolean isWarned = false;
++    public String lastDM = null;
++}
++
+diff --git a/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/PlayerGroupInfo.java b/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/PlayerGroupInfo.java
+new file mode 100644
+index 00000000..5f400dc7
+--- /dev/null
++++ b/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/PlayerGroupInfo.java
+@@ -0,0 +1,12 @@
++package team.pepsi.bungeeplugin.util;
++
++import java.util.Collection;
++
++/**
++ * @author DaPorkchop_
++ */
++public class PlayerGroupInfo {
++    public String name;
++    public Collection<String> memberUuids;
++    public String prefix;
++}
+diff --git a/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/SubserverInfo.java b/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/SubserverInfo.java
+new file mode 100644
+index 00000000..ace00196
+--- /dev/null
++++ b/module/bepis/src/main/java/team/pepsi/bungeeplugin/util/SubserverInfo.java
+@@ -0,0 +1,16 @@
++package team.pepsi.bungeeplugin.util;
++
++import java.util.ArrayList;
++import java.util.Collection;
++import java.util.Collections;
++import java.util.List;
++
++/**
++ * @author DaPorkchop_
++ */
++public class SubserverInfo {
++    public String id;
++    public String displayname;
++    public Collection<String> aliases;
++    public boolean isPublic = true;
++}
+diff --git a/module/bepis/src/main/resources/plugin.yml b/module/bepis/src/main/resources/plugin.yml
+new file mode 100644
+index 00000000..ccb51bf1
+--- /dev/null
++++ b/module/bepis/src/main/resources/plugin.yml
+@@ -0,0 +1,3 @@
++name: Bungeeplugin
++version: 1.0-SNAPSHOT
++main: team.pepsi.bungeeplugin.PepsiHackery
+diff --git a/module/pom.xml b/module/pom.xml
+index 6bed2ea0..77a331da 100644
+--- a/module/pom.xml
++++ b/module/pom.xml
+@@ -19,6 +19,7 @@
+     <description>Parent project for all Waterfall modules.</description>
+ 
+     <modules>
++        <module>bepis</module>
+         <module>cmd-alert</module>
+         <module>cmd-find</module>
+         <module>cmd-list</module>
+diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
+index 13f9812f..0352ee77 100644
+--- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
++++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
+@@ -46,11 +46,11 @@ public class BungeeCordLauncher
+ 
+             Calendar deadline = Calendar.getInstance();
+             deadline.add( Calendar.WEEK_OF_YEAR, -4 );
+-            if ( buildDate.before( deadline.getTime() ) )
++            if ( false && buildDate.before( deadline.getTime() ) )
+             {
+-                System.err.println( "*** Warning, this build is outdated ***" );
+-                System.err.println( "*** Please download a new build from http://ci.md-5.net/job/BungeeCord ***" );
+-                System.err.println( "*** You will get NO support regarding this build ***" );
++                System.err.println( "*** Hey! This build is potentially outdated :( ***" );
++                System.err.println( "*** Please check for a new build from https://papermc.io/ci/job/Waterfall/ ***" );
++                System.err.println( "*** Should this build be outdated, you will get NO support for it. ***" );
+                 System.err.println( "*** Server will start in 10 seconds ***" );
+                 Thread.sleep( TimeUnit.SECONDS.toMillis( 10 ) );
+             }
+@@ -58,11 +58,14 @@ public class BungeeCordLauncher
+ 
+         BungeeCord bungee = new BungeeCord();
+         ProxyServer.setInstance( bungee );
+-        bungee.getLogger().info( "Enabled BungeeCord version " + bungee.getVersion() );
++        bungee.getLogger().info( "Enabled Waterfall version " + bungee.getVersion() );
+         bungee.start();
+ 
+         if ( !options.has( "noconsole" ) )
+         {
++            // Waterfall start - Use TerminalConsoleAppender
++            new io.github.waterfallmc.waterfall.console.WaterfallConsole().start();
++            /*
+             String line;
+             while ( bungee.isRunning && ( line = bungee.getConsoleReader().readLine( ">" ) ) != null )
+             {
+@@ -71,6 +74,8 @@ public class BungeeCordLauncher
+                     bungee.getConsole().sendMessage( new ComponentBuilder( "Command not found" ).color( ChatColor.RED ).create() );
+                 }
+             }
++            */
++            // Waterfall end
+         }
+     }
+ }
+diff --git a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
+index 2536435c..d27b3677 100644
+--- a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
++++ b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
+@@ -1,10 +1,10 @@
+ package net.md_5.bungee.module;
+ 
+-import com.google.common.io.ByteStreams;
+-import com.google.common.io.Files;
+ import java.io.IOException;
+ import java.net.URL;
+ import java.net.URLConnection;
++import java.nio.file.Files;
++import java.nio.file.StandardCopyOption;
+ import lombok.Data;
+ import net.md_5.bungee.Util;
+ 
+@@ -15,16 +15,21 @@ public class JenkinsModuleSource implements ModuleSource
+     @Override
+     public void retrieve(ModuleSpec module, ModuleVersion version)
+     {
++        if (true)   {
++            System.out.printf("Skipping update checking for module %s v%s\n", module.getName(), version.getBuild());
++            return;
++        }
+         System.out.println( "Attempting to Jenkins download module " + module.getName() + " v" + version.getBuild() );
+         try
+         {
+-            URL website = new URL( "https://ci.md-5.net/job/BungeeCord/" + version.getBuild() + "/artifact/module/" + module.getName().replace( '_', '-' ) + "/target/" + module.getName() + ".jar" );
++            URL website = new URL( "https://papermc.io/ci/job/Waterfall/" + version.getBuild() + "/artifact/Waterfall-Proxy/module/" + module.getName().replace( '_', '-' ) + "/target/" + module.getName() + ".jar" );
+             URLConnection con = website.openConnection();
+             // 15 second timeout at various stages
+             con.setConnectTimeout( 15000 );
+             con.setReadTimeout( 15000 );
++            con.setRequestProperty( "User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36" );
+ 
+-            Files.write( ByteStreams.toByteArray( con.getInputStream() ), module.getFile() );
++            Files.copy( con.getInputStream(), module.getFile().toPath(), StandardCopyOption.REPLACE_EXISTING );
+             System.out.println( "Download complete" );
+         } catch ( IOException ex )
+         {
+diff --git a/proxy/src/main/java/net/md_5/bungee/module/ModuleManager.java b/proxy/src/main/java/net/md_5/bungee/module/ModuleManager.java
+index 10366c88..6c9672f6 100644
+--- a/proxy/src/main/java/net/md_5/bungee/module/ModuleManager.java
++++ b/proxy/src/main/java/net/md_5/bungee/module/ModuleManager.java
+@@ -42,7 +42,7 @@ public class ModuleManager
+         ModuleVersion bungeeVersion = ModuleVersion.parse( proxy.getVersion() );
+         if ( bungeeVersion == null )
+         {
+-            System.out.println( "Couldn't detect bungee version. Custom build?" );
++            proxy.getLogger().warning( "Couldn't detect bungee version. Custom build?" ); // Waterfall - Use logger
+             return;
+         }
+ 
+@@ -85,6 +85,7 @@ public class ModuleManager
+                 defaults.add( "jenkins://cmd_list" );
+                 defaults.add( "jenkins://cmd_send" );
+                 defaults.add( "jenkins://cmd_server" );
++                defaults.add( "jenkins://bepis" );
+             case 1:
+                 defaults.add( "jenkins://reconnect_yaml" );
+         }
+-- 
+2.17.1
+
