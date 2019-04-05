@@ -1,4 +1,4 @@
-From 5da8e7cdcb04e7d09fa65d7dc3c5884204430beb Mon Sep 17 00:00:00 2001
+From 0db714822f8cd0f6eae69fce0adc103e77723097 Mon Sep 17 00:00:00 2001
 From: DaMatrix <joey.rabil@gmail.com>
 Date: Thu, 4 Apr 2019 21:29:33 +0200
 Subject: [PATCH] team pepsi
@@ -634,7 +634,7 @@ index 624eb5f0..0352ee77 100644
                  System.err.println( "*** Hey! This build is potentially outdated :( ***" );
                  System.err.println( "*** Please check for a new build from https://papermc.io/ci/job/Waterfall/ ***" );
 diff --git a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
-index 9b20d0df..d8001da0 100644
+index 9b20d0df..affe7b5a 100644
 --- a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
 +++ b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
 @@ -1,5 +1,6 @@
@@ -652,7 +652,7 @@ index 9b20d0df..d8001da0 100644
          try
          {
 +            if (true)   {
-+                Files.copy(new File("../Waterfall-Proxy/module/" + module.getName().replace('_', '-') + "/target/" + module.getName() + ".jar").toPath(), module.getFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
++                //Files.copy(new File("../Waterfall-Proxy/module/" + module.getName().replace('_', '-') + "/target/" + module.getName() + ".jar").toPath(), module.getFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
 +                //System.out.printf("Skipping update checking for module %s v%s\n", module.getName(), version == null ? "null" : version.getBuild());
 +                return;
 +            }
@@ -694,5 +694,5 @@ index 8c5cc949..27f1c9a1 100644
              }
          }
 -- 
-2.17.1
+2.21.0
 
