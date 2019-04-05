@@ -1,7 +1,5 @@
-ip_forward: true
-forge_support: true
-network_compression_threshold: 256
-stats: 9bbb3f86-64b2-428a-8bbc-af4cdf660f3b
+connection_throttle: 4000
+prevent_proxy_connections: false
 groups:
   DaPorkchop_:
   - admin
@@ -34,8 +32,16 @@ servers:
         &7pork's craptop
     address: 192.168.1.108:25565
     restricted: false
-timeout: 30000
+connection_throttle_limit: 3
+online_mode: true
+ip_forward: true
+forge_support: true
 player_limit: -1
+disabled_commands:
+- disabledcommandhere
+log_pings: true
+log_commands: false
+stats: 9bbb3f86-64b2-428a-8bbc-af4cdf660f3b
 listeners:
 - query_port: 25565
   motd: '&9&lTeam &c&lPepsi &r&fNetwork'
@@ -54,7 +60,7 @@ listeners:
   max_players: 10000
   tab_size: 60
   force_default_server: false
-prevent_proxy_connections: false
+network_compression_threshold: 256
 permissions:
   default:
   - bungeecord.command.server
@@ -64,8 +70,4 @@ permissions:
   - bungeecord.command.end
   - bungeecord.command.ip
   - bungeecord.command.reload
-online_mode: true
-log_commands: false
-disabled_commands:
-- disabledcommandhere
-connection_throttle: 4000
+timeout: 30000

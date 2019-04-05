@@ -1,7 +1,10 @@
-use_netty_dns_resolver: true
-log_initial_handler_connections: true
-metrics: true
 throttling:
   tab_complete: 250
-game_version: ''
+log_initial_handler_connections: true
+use_netty_dns_resolver: true
 log_server_list_ping: false
+disable_entity_metadata_rewrite: false
+allow_empty_packets: false
+game_version: ''
+metrics: true
+disable_modern_tab_limiter: true
