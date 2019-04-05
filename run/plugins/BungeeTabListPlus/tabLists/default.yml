@@ -1,0 +1,38 @@
+showTo: "all"
+priority: 0
+
+customPlaceholders:
+  serverPrefix:
+    !conditional
+    condition: ${viewer server} == ${player server}
+    true: ""
+    false: "&o"
+
+playerSets:
+  all_players: # A player set containing all players
+    filter: "true"
+    hiddenPlayers: "VISIBLE" # Hidden players show up on the tab list, avoids glitches
+
+# A simple header and footer
+showHeaderFooter: false
+header:
+- '&cWelcome &f${viewer name}'
+headerAnimationUpdateInterval: 1.0
+footer:
+- '&f&oPowered by BungeeTabListPlus'
+footerAnimationUpdateInterval: 1.0
+
+# We want a dynamic size tab list
+type: DYNAMIC_SIZE
+
+# Below are the options specific to the dynamic size tab list
+
+# Here you can configure which players to display by specifying a player set.
+# For this example we are using the `all_players` player set created above.
+playerSet: all_players
+
+# Here the order of the players can be configured.
+playerOrder: "alphabetically"
+
+# This option controls the format of the players names.
+playerComponent: "${player bungeecord_display_name}${serverPrefix}${player name}"

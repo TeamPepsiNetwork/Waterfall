@@ -1,0 +1,71 @@
+ip_forward: true
+forge_support: true
+network_compression_threshold: 256
+stats: 9bbb3f86-64b2-428a-8bbc-af4cdf660f3b
+groups:
+  DaPorkchop_:
+  - admin
+servers:
+  bepis:
+    motd: |-
+      &9&lTeam &c&lPepsi &r&fNetwork&r
+        &7bepis
+    address: 192.168.1.119:49527
+    restricted: false
+  lobby:
+    motd: '&9&lTeam &c&lPepsi &r&fNetwork'
+    address: 192.168.1.130:25565
+    restricted: false
+  anarchyskyblock:
+    motd: |-
+      &9&lTeam &c&lPepsi &r&fNetwork&r
+        &7AnarchySkyBlock
+    address: 192.168.1.131:25565
+    restricted: false
+  wip:
+    motd: |-
+      &9&lTeam &c&lPepsi &r&fNetwork&r
+        &73rd Raspberry Pi 3 Model B - currently unused, do not connect!
+    address: 192.168.1.132:25565
+    restricted: false
+  laptop:
+    motd: |-
+      &9&lTeam &c&lPepsi &r&fNetwork&r
+        &7pork's craptop
+    address: 192.168.1.108:25565
+    restricted: false
+timeout: 30000
+player_limit: -1
+listeners:
+- query_port: 25565
+  motd: '&9&lTeam &c&lPepsi &r&fNetwork'
+  tab_list: GLOBAL_PING
+  query_enabled: true
+  proxy_protocol: false
+  forced_hosts:
+    bepis.pepsi.team: bepis
+    mc.pepsi.team: lobby
+    laptop-server.local: laptop
+  ping_passthrough: false
+  priorities:
+  - lobby
+  bind_local_address: true
+  host: 0.0.0.0:25565
+  max_players: 10000
+  tab_size: 60
+  force_default_server: false
+prevent_proxy_connections: false
+permissions:
+  default:
+  - bungeecord.command.server
+  - bungeecord.command.list
+  admin:
+  - bungeecord.command.alert
+  - bungeecord.command.end
+  - bungeecord.command.ip
+  - bungeecord.command.reload
+online_mode: true
+log_commands: false
+disabled_commands:
+- disabledcommandhere
+connection_throttle: 4000

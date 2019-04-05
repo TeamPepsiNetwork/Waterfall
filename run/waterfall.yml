@@ -1,0 +1,7 @@
+use_netty_dns_resolver: true
+log_initial_handler_connections: true
+metrics: true
+throttling:
+  tab_complete: 250
+game_version: ''
+log_server_list_ping: false
