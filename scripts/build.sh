@@ -3,5 +3,5 @@
 git submodule update --init && ./scripts/applyPatches.sh
 
 if [ "$1" == "--jar" ]; then
-     mvn package
+     mvn package -Dmaven.test.skip=true
 fi

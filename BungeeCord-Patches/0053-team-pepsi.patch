@@ -1,7 +1,7 @@
-From 30ac25509f926e68c6287085e20c3f570841e2cc Mon Sep 17 00:00:00 2001
+From f8d43b7f8c81e32af7dcb997ca314e0de3a83a56 Mon Sep 17 00:00:00 2001
 From: DaMatrix <joey.rabil@gmail.com>
 Date: Thu, 4 Apr 2019 21:29:33 +0200
-Subject: [PATCH] add team pepsi stuff part 2
+Subject: [PATCH] team pepsi
 
 
 diff --git a/module/bepis/pom.xml b/module/bepis/pom.xml
@@ -571,11 +571,11 @@ index 00000000..ace00196
 +}
 diff --git a/module/bepis/src/main/resources/plugin.yml b/module/bepis/src/main/resources/plugin.yml
 new file mode 100644
-index 00000000..ccb51bf1
+index 00000000..64818646
 --- /dev/null
 +++ b/module/bepis/src/main/resources/plugin.yml
 @@ -0,0 +1,3 @@
-+name: Bungeeplugin
++name: bepishackery
 +version: 1.0-SNAPSHOT
 +main: team.pepsi.bungeeplugin.PepsiHackery
 diff --git a/module/pom.xml b/module/pom.xml
@@ -591,104 +591,58 @@ index 6bed2ea0..77a331da 100644
          <module>cmd-find</module>
          <module>cmd-list</module>
 diff --git a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-index 13f9812f..0352ee77 100644
+index 624eb5f0..0352ee77 100644
 --- a/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
 +++ b/proxy/src/main/java/net/md_5/bungee/BungeeCordLauncher.java
-@@ -46,11 +46,11 @@ public class BungeeCordLauncher
+@@ -46,7 +46,7 @@ public class BungeeCordLauncher
  
              Calendar deadline = Calendar.getInstance();
              deadline.add( Calendar.WEEK_OF_YEAR, -4 );
 -            if ( buildDate.before( deadline.getTime() ) )
 +            if ( false && buildDate.before( deadline.getTime() ) )
              {
--                System.err.println( "*** Warning, this build is outdated ***" );
--                System.err.println( "*** Please download a new build from http://ci.md-5.net/job/BungeeCord ***" );
--                System.err.println( "*** You will get NO support regarding this build ***" );
-+                System.err.println( "*** Hey! This build is potentially outdated :( ***" );
-+                System.err.println( "*** Please check for a new build from https://papermc.io/ci/job/Waterfall/ ***" );
-+                System.err.println( "*** Should this build be outdated, you will get NO support for it. ***" );
-                 System.err.println( "*** Server will start in 10 seconds ***" );
-                 Thread.sleep( TimeUnit.SECONDS.toMillis( 10 ) );
-             }
-@@ -58,11 +58,14 @@ public class BungeeCordLauncher
- 
-         BungeeCord bungee = new BungeeCord();
-         ProxyServer.setInstance( bungee );
--        bungee.getLogger().info( "Enabled BungeeCord version " + bungee.getVersion() );
-+        bungee.getLogger().info( "Enabled Waterfall version " + bungee.getVersion() );
-         bungee.start();
- 
-         if ( !options.has( "noconsole" ) )
-         {
-+            // Waterfall start - Use TerminalConsoleAppender
-+            new io.github.waterfallmc.waterfall.console.WaterfallConsole().start();
-+            /*
-             String line;
-             while ( bungee.isRunning && ( line = bungee.getConsoleReader().readLine( ">" ) ) != null )
-             {
-@@ -71,6 +74,8 @@ public class BungeeCordLauncher
-                     bungee.getConsole().sendMessage( new ComponentBuilder( "Command not found" ).color( ChatColor.RED ).create() );
-                 }
-             }
-+            */
-+            // Waterfall end
-         }
-     }
- }
+                 System.err.println( "*** Hey! This build is potentially outdated :( ***" );
+                 System.err.println( "*** Please check for a new build from https://papermc.io/ci/job/Waterfall/ ***" );
 diff --git a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
-index 2536435c..d27b3677 100644
+index 9b20d0df..d8001da0 100644
 --- a/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
 +++ b/proxy/src/main/java/net/md_5/bungee/module/JenkinsModuleSource.java
-@@ -1,10 +1,10 @@
+@@ -1,5 +1,6 @@
  package net.md_5.bungee.module;
  
--import com.google.common.io.ByteStreams;
--import com.google.common.io.Files;
++import java.io.File;
  import java.io.IOException;
  import java.net.URL;
  import java.net.URLConnection;
-+import java.nio.file.Files;
-+import java.nio.file.StandardCopyOption;
- import lombok.Data;
- import net.md_5.bungee.Util;
- 
-@@ -15,16 +15,21 @@ public class JenkinsModuleSource implements ModuleSource
+@@ -15,9 +16,14 @@ public class JenkinsModuleSource implements ModuleSource
      @Override
      public void retrieve(ModuleSpec module, ModuleVersion version)
      {
-+        if (true)   {
-+            System.out.printf("Skipping update checking for module %s v%s\n", module.getName(), version.getBuild());
-+            return;
-+        }
-         System.out.println( "Attempting to Jenkins download module " + module.getName() + " v" + version.getBuild() );
+-        System.out.println( "Attempting to Jenkins download module " + module.getName() + " v" + version.getBuild() );
          try
          {
--            URL website = new URL( "https://ci.md-5.net/job/BungeeCord/" + version.getBuild() + "/artifact/module/" + module.getName().replace( '_', '-' ) + "/target/" + module.getName() + ".jar" );
-+            URL website = new URL( "https://papermc.io/ci/job/Waterfall/" + version.getBuild() + "/artifact/Waterfall-Proxy/module/" + module.getName().replace( '_', '-' ) + "/target/" + module.getName() + ".jar" );
++            if (true)   {
++                Files.copy(new File("../Waterfall-Proxy/module/" + module.getName().replace('_', '-') + "/target/" + module.getName() + ".jar").toPath(), module.getFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
++                //System.out.printf("Skipping update checking for module %s v%s\n", module.getName(), version == null ? "null" : version.getBuild());
++                return;
++            }
++            System.out.println( "Attempting to Jenkins download module " + module.getName() + " v" + version.getBuild() );
+             URL website = new URL( "https://papermc.io/ci/job/Waterfall/" + version.getBuild() + "/artifact/Waterfall-Proxy/module/" + module.getName().replace( '_', '-' ) + "/target/" + module.getName() + ".jar" );
              URLConnection con = website.openConnection();
              // 15 second timeout at various stages
-             con.setConnectTimeout( 15000 );
-             con.setReadTimeout( 15000 );
-+            con.setRequestProperty( "User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36" );
- 
--            Files.write( ByteStreams.toByteArray( con.getInputStream() ), module.getFile() );
-+            Files.copy( con.getInputStream(), module.getFile().toPath(), StandardCopyOption.REPLACE_EXISTING );
-             System.out.println( "Download complete" );
-         } catch ( IOException ex )
-         {
 diff --git a/proxy/src/main/java/net/md_5/bungee/module/ModuleManager.java b/proxy/src/main/java/net/md_5/bungee/module/ModuleManager.java
-index 10366c88..6c9672f6 100644
+index 8c5cc949..27f1c9a1 100644
 --- a/proxy/src/main/java/net/md_5/bungee/module/ModuleManager.java
 +++ b/proxy/src/main/java/net/md_5/bungee/module/ModuleManager.java
-@@ -42,7 +42,7 @@ public class ModuleManager
-         ModuleVersion bungeeVersion = ModuleVersion.parse( proxy.getVersion() );
+@@ -43,7 +43,7 @@ public class ModuleManager
          if ( bungeeVersion == null )
          {
--            System.out.println( "Couldn't detect bungee version. Custom build?" );
-+            proxy.getLogger().warning( "Couldn't detect bungee version. Custom build?" ); // Waterfall - Use logger
-             return;
+             proxy.getLogger().warning( "Couldn't detect bungee version. Custom build?" ); // Waterfall - Use logger
+-            return;
++            //return;
          }
  
+         List<ModuleSpec> modules = new ArrayList<>();
 @@ -85,6 +85,7 @@ public class ModuleManager
                  defaults.add( "jenkins://cmd_list" );
                  defaults.add( "jenkins://cmd_send" );
@@ -696,6 +650,18 @@ index 10366c88..6c9672f6 100644
 +                defaults.add( "jenkins://bepis" );
              case 1:
                  defaults.add( "jenkins://reconnect_yaml" );
+         }
+@@ -122,9 +123,9 @@ public class ModuleManager
+         {
+             ModuleVersion moduleVersion = ( module.getFile().exists() ) ? getVersion( module.getFile() ) : null;
+ 
+-            if ( !bungeeVersion.equals( moduleVersion ) )
++            if ( bungeeVersion == null || !bungeeVersion.equals( moduleVersion ) )
+             {
+-                System.out.println( "Attempting to update plugin from " + moduleVersion + " to " + bungeeVersion );
++                //System.out.println( "Attempting to update plugin from " + moduleVersion + " to " + bungeeVersion );
+                 module.getProvider().retrieve( module, bungeeVersion );
+             }
          }
 -- 
 2.17.1
